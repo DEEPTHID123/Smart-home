@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Smart Home</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="applications.html">Applications</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="manage.html">Control</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <div class="dashboard-title">
+            <h1>Energy Dashboard</h1>
+            <div class="filters">
+                <button>Today</button>
+                <button class="active">Month</button>
+                <button>Year</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Cost Predicted</h3>
+                <canvas id="costChart"></canvas>
+            </div>
+            <div class="card">
+                <h3>Change in Cost</h3>
+                <canvas id="changeChart"></canvas>
+            </div>
+            <div class="card">
+                <h3>Usage Estimate</h3>
+                <canvas id="usageChart"></canvas>
+            </div>
+            <div class="card">
+                <h3>Energy Intensity</h3>
+                <canvas id="intensityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="ai-assistant">
+         <button class="ai-btn" title="Hi! How can I help you?" onclick="askAI()">🤖</button>
+         <div id="ai-response"></div>
+      </div>
+
+
+    <script src="script.js"></script>
+
+    <script>
+        function askAI() {
+            document.getElementById('ai-response').innerText = "AI Assistant is thinking...";
+            setTimeout(() => {
+                document.getElementById('ai-response').innerText = "How can I assist you with energy management?";
+            }, 2000);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            }
+
+           const filterButtons = document.querySelectorAll(".filters button");
+            filterButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    filterButtons.forEach(btn => btn.classList.remove("active"));
+                    this.classList.add("active");
+                    updateCharts(this.textContent.trim().toLowerCase()); 
+                });
+            });
+
+            loadCharts("month"); 
+        });
+
+        const chartData = {
+            cost: {
+                today: [200, 100],
+                month: [600, 400],
+                year: [7200, 4800]
+            },
+            intensity: {
+                today: [80, 20],
+                month: [75, 25],
+                year: [70, 30]
+            },
+            change: {
+                today: [20, -10, 30, -5, 15],
+                month: [200, -100, 300, -50, 150],
+                year: [2400, -1200, 3600, -600, 1800]
+            },
+            usage: {
+                today: [30, 20, 25, 15],
+                month: [120, 80, 90, 60],
+                year: [1440, 960, 1080, 720]
+            }
+        };
+
+         let costChart, intensityChart, changeChart, usageChart;
+
+       function createDoughnutChart(canvasId, labels, data, colors, prefix = "") {
+            const ctx = document.getElementById(canvasId).getContext("2d");
+
+            return new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        hoverBackgroundColor: colors.map(color => darkenColor(color))
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "60%",
+                    plugins: {
+                        legend: { position: "bottom" },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            bodyFont: { size: 14, weight: "bold" },
+                            bodyColor: "#fff",
+                            padding: 8,
+                            cornerRadius: 4,
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return `${labels[tooltipItem.dataIndex]}: ${prefix}${tooltipItem.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createBarChart(canvasId, labels, data, title, prefix = "") {
+            const ctx = document.getElementById(canvasId).getContext("2d");
+
+            return new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: title,
+                        data: data,
+                        backgroundColor: "#007BFF",
+                        borderColor: "#0056b3",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    },
+                    plugins: {
+                        tooltip: {
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            bodyFont: { size: 14, weight: "bold" },
+                            bodyColor: "#fff",
+                            padding: 8,
+                            cornerRadius: 4,
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return `${title}: ${prefix}${tooltipItem.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+         function darkenColor(hex) {
+            return hex.replace("B", "8").replace("A", "7").replace("F", "D");
+        }
+
+        function loadCharts(period) {
+            costChart = createDoughnutChart("costChart", ["Electricity Cost", "Gas Cost"], chartData.cost[period], ["#007BFF", "#FFA500"], "₹");
+            intensityChart = createDoughnutChart("intensityChart", ["Peak Usage", "Off-Peak Usage"], chartData.intensity[period], ["#28A745", "#DC3545"], "%");
+            changeChart = createBarChart("changeChart", ["Jan", "Feb", "Mar", "Apr", "May"], chartData.change[period], "Cost Change", "₹");
+            usageChart = createBarChart("usageChart", ["Living Room", "Kitchen", "Bedroom", "Bathroom"], chartData.usage[period], "Usage Estimate", "kWh");
+        }
+
+        function updateCharts(period) {
+            costChart.data.datasets[0].data = chartData.cost[period];
+            intensityChart.data.datasets[0].data = chartData.intensity[period];
+            changeChart.data.datasets[0].data = chartData.change[period];
+            usageChart.data.datasets[0].data = chartData.usage[period];
+
+            costChart.update();
+            intensityChart.update();
+            changeChart.update();
+            usageChart.update();
+        }
+    </script>
+</body>
+</html>

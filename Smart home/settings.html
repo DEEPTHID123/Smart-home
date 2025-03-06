@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Smart Home</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="applications.html">Applications</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="manage.html">Control</a></li>
+            <li><a href="settings.html" class="active">Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="settings-container">
+        <div class="settings-header">
+            <i class="fas fa-arrow-left back-button" onclick="goToDashboard()"></i> 
+            <span class="settings-title">Settings</span>
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="settings-options">
+            <div class="settings-row" onclick="toggleContent('personalInfo')">
+                <div class="left">
+                    <i class="fas fa-user"></i>
+                    <span>&nbsp; Personal Information</span>
+                </div>
+                <div class="right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div id="personalInfo" class="hidden-content">
+                <p><strong>Name:</strong> D Deepthi</p>
+                <div class="separator"></div> 
+                <p><strong>Email:</strong> deepthi6803@gmail.com</p>
+                <div class="separator"></div> 
+                <p><strong>Phone number:</strong> +91 8612134871</p>
+                <div class="separator"></div> 
+                <p><strong>Address:</strong> #122, Friends layout, seegehalli K R Puram, Bangalore-560049</p>
+                <div class="separator"></div>
+                <p><strong>Password:</strong> ******** <button class="change-password-btn" onclick="changePassword()">Change Password</button></p>
+            </div>
+
+            <div class="settings-row" onclick="toggleContent('theme')">
+                <div class="left">
+                    <i class="fas fa-moon"></i> 
+                    <span>&nbsp; Theme</span>
+                </div>
+                <div class="right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div id="theme" class="hidden-content">
+                <div class="theme-toggle-container">
+                    <p>Choose between light and dark themes for a personalized experience.</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="theme-toggle" onclick="toggleTheme()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-row" onclick="toggleContent('helpSupport')">
+                <div class="left">
+                    <i class="fas fa-question-circle"></i>
+                    <span>&nbsp; Help & Support</span>
+                </div>
+                <div class="right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div id="helpSupport" class="hidden-content">
+                <p>If you need help, feel free to reach out to us:</p>
+                <ul>
+                    <li><a href="faq.html">FAQs</a></li>
+                    <li><a href="contact.html">Contact Support</a></li>
+                    <li><a href="tutorials.html">User Guides</a></li>
+                </ul>
+                <div class="separator-line"></div>
+                <p><strong>Or reach out to us directly:</strong></p>
+                <div class="support-methods">
+                    <p><strong>Email Support:</strong> <a href="mailto:support@example.com">support@example.com</a></p>
+                    <p><strong>Phone Support:</strong> <a href="tel:+1234567890">+1 234 567 890</a></p>
+                    <button class="live-chat-btn" onclick="startLiveChat()">Start Live Chat</button>
+                </div>
+            </div>
+
+            <div class="settings-row" onclick="toggleContent('version')">
+                <div class="left">
+                    <i class="fas fa-check-circle"></i>
+                    <span>&nbsp;Version 4.128.134.511</span>
+                </div>
+                <div class="right">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div id="version" class="hidden-content">
+                <p>You're currently using Version 4.128.134.511. No updates are available.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goToDashboard() {
+            window.location.href = "index.html";
+        }
+
+        function toggleContent(sectionId) {
+            const content = document.getElementById(sectionId);
+            content.classList.toggle('hidden-content-visible');
+        }
+
+        function toggleTheme() {
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle.checked) {
+                document.body.classList.add('dark-mode');
+                document.body.style.color = "black";
+                localStorage.setItem("theme", "dark");
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.style.color = "black";
+                localStorage.setItem("theme", "light");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("theme");
+            const toggle = document.getElementById('theme-toggle');
+            if (savedTheme === "dark") {
+                document.body.classList.add('dark-mode');
+                document.body.style.color = "black";
+                toggle.checked = true;
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.style.color = "black";
+                toggle.checked = false;
+            }
+        });
+    </script>
+</body>
+</html>

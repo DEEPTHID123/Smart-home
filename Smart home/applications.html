@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            }
+
+            const savedBudget = localStorage.getItem('userBudget');
+            if (savedBudget) {
+                document.getElementById('budgetInput').value = savedBudget;
+                checkBudget();
+            }
+        });
+    </script>
+    
+    <div class="sidebar">
+        <h2>Smart Home</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="applications.html">Applications</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="manage.html">Control</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Energy Usage Overview</h1>
+        <div class="device-options">
+            <button class="device-btn" onclick="redirectToDevice('lights')">Lights</button>
+            <button class="device-btn" onclick="redirectToDevice('ac')">AC</button>
+            <button class="device-btn" onclick="redirectToDevice('refrigerator')">Refrigerator</button>
+            <button class="device-btn" onclick="redirectToDevice('others')">Other Devices</button>
+        </div>
+        <h2 id="selected-device">Click on a device to see its usage</h2>
+
+        <div class="dashboard-cards">
+            <div class="card green">Lights: <span id="lights-usage">5</span> kWh</div>
+            <div class="card red">AC: <span id="ac-usage">20</span> kWh</div>
+            <div class="card purple">Refrigerator: <span id="fridge-usage">10</span> kWh</div>
+            <div class="card yellow">Other Devices: <span id="other-usage">15</span> kWh</div>
+        </div>
+
+        <canvas id="comparisonChart"></canvas>
+
+       <div class="budget-section">
+            <h3>Set Energy Budget</h3>
+            <input type="number" id="budgetInput" placeholder="Enter budget (kWh)">
+            <button onclick="setBudget()">Set Budget</button>
+            <p id="budget-alert"></p>
+        </div>
+    </div>
+
+    <div class="ai-assistant">
+        <button class="ai-btn" onclick="askAI()">🤖</button>
+        <div id="ai-response"></div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        const costPerKwh = 20; 
+         function checkBudget() {
+            const totalUsage = calculateTotalUsage(); 
+            const totalCost = totalUsage * costPerKwh; 
+            const savedBudget = parseFloat(localStorage.getItem('userBudget')) || 50; 
+            document.getElementById('total-cost').innerText = `Total Cost: ₹${totalCost.toFixed(2)}`;
+
+            if (totalCost > savedBudget * costPerKwh) {
+                document.getElementById('budget-alert').innerText = `⚠ Warning: Energy usage exceeds your budget! Total cost: ₹${totalCost.toFixed(2)}`;
+                document.getElementById('budget-alert').classList.add('red');
+                document.getElementById('budget-alert').classList.remove('green');
+            } else {
+                document.getElementById('budget-alert').innerText = `✅ Energy usage is within your budget. Total cost: ₹${totalCost.toFixed(2)}`;
+                document.getElementById('budget-alert').classList.add('green');
+                document.getElementById('budget-alert').classList.remove('red');
+            }
+        }
+
+        function calculateTotalUsage() {
+            const deviceUsages = {
+                "Lights": parseFloat(document.getElementById('lights-usage').innerText),
+                "AC": parseFloat(document.getElementById('ac-usage').innerText),
+                "Refrigerator": parseFloat(document.getElementById('fridge-usage').innerText),
+                "Other Devices": parseFloat(document.getElementById('other-usage').innerText)
+            };
+
+            return Object.values(deviceUsages).reduce((total, usage) => total + usage, 0);
+        }
+
+       function setBudget() {
+            const budget = parseFloat(document.getElementById('budgetInput').value);
+            if (isNaN(budget) || budget <= 0) {
+                alert("Please enter a valid budget.");
+            } else {
+                localStorage.setItem('userBudget', budget);
+                alert(`Budget of ${budget} kWh saved.`);
+                checkBudget(); 
+            }
+        }
+
+        function redirectToDevice(device) {
+            localStorage.setItem("selectedDevice", device);
+            window.location.href = "device.html";
+        }
+
+        function askAI() {
+            document.getElementById('ai-response').innerText = "AI Assistant is thinking...";
+            setTimeout(() => {
+                document.getElementById('ai-response').innerText = "How can I assist you with energy management?";
+            }, 2000);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('comparisonChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Lights', 'AC', 'Refrigerator', 'Other Devices'],
+                        datasets: [{
+                            label: 'Energy Usage (kWh)',
+                            data: [
+                                parseFloat(document.getElementById('lights-usage').innerText),
+                                parseFloat(document.getElementById('ac-usage').innerText),
+                                parseFloat(document.getElementById('fridge-usage').innerText),
+                                parseFloat(document.getElementById('other-usage').innerText)
+                            ],
+                            backgroundColor: ['#2196F3', '#FF9800', '#4CAF50', '#FF5722']
+                        }]
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

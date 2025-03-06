@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Reports</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            }
+
+             checkBudget();
+        });
+
+        function checkBudget() {
+            const savedBudget = localStorage.getItem('userBudget') || 50; // Default to 50 if no budget is set
+            const totalCost = calculateTotalCost();
+
+            document.getElementById('budget-alert').innerText = `Total Cost: ₹${totalCost.toFixed(2)}`;
+            if (totalCost > savedBudget * 20) {
+                document.getElementById('budget-alert').classList.add('red');
+                document.getElementById('budget-alert').classList.remove('green');
+                document.getElementById('budget-alert').innerText += " ⚠️ Warning: Exceeds your set budget!";
+            } else {
+                document.getElementById('budget-alert').classList.add('green');
+                document.getElementById('budget-alert').classList.remove('red');
+                document.getElementById('budget-alert').innerText += " ✅ Within your budget.";
+            }
+        }
+
+       function calculateTotalCost() {
+            const costPerKwh = 20; 
+
+            const reportData = [
+                { device: "Lights", usage: 15 },
+                { device: "AC", usage: 30 },
+                { device: "Refrigerator", usage: 50 },
+                { device: "Television", usage: 18 },
+                { device: "Washing Machine", usage: 42 },
+                { device: "Microwave", usage: 20 },
+                { device: "Water Heater", usage: 35 },
+                { device: "Other Devices", usage: 25 }
+            ];
+
+            return reportData.reduce((total, item) => total + (item.usage * costPerKwh), 0);
+        }
+    </script>
+
+    <div class="sidebar">
+        <h2>Smart Home</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="applications.html">Applications</a></li>
+            <li><a href="reports.html" class="active">Reports</a></li>
+            <li><a href="manage.html">Control</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1 class="center-text">Energy Usage Report</h1>
+
+        <div class="budget-alert">
+            <p id="budget-alert"></p>
+        </div>
+
+        <button class="generate-btn" onclick="generateReport()">Generate Report</button>
+        <div id="report-content"></div>
+
+        <div id="report-buttons" class="hidden report-buttons">
+            <button class="print-btn" onclick="printReport()">🖨 Print</button>
+            <button class="download-btn" onclick="downloadReport()">⬇ Download</button>
+        </div>
+    </div>
+
+    <div class="ai-assistant">
+        <button class="ai-btn" onclick="askAI()">🤖</button>
+        <div id="ai-response"></div>
+    </div>
+
+    <script>
+        function askAI() {
+            document.getElementById('ai-response').innerText = "AI Assistant is thinking...";
+            setTimeout(() => {
+                document.getElementById('ai-response').innerText = "How can I assist you with energy management?";
+            }, 2000);
+        }
+        
+        function generateReport() {
+            const reportData = [
+                ["Appliance", "Usage (kWh)", "Total Cost (₹)", "Profit / Loss %"],
+                ["Lights", 15, (15 * 20).toFixed(2), calcProfitLoss(15, 25)],
+                ["AC", 30, (30 * 20).toFixed(2), calcProfitLoss(30, 50)],
+                ["Refrigerator", 50, (50 * 20).toFixed(2), calcProfitLoss(50, 45)],
+                ["Television", 18, (18 * 20).toFixed(2), calcProfitLoss(18, 18)],
+                ["Washing Machine", 42, (42 * 20).toFixed(2), calcProfitLoss(42, 25)],
+                ["Microwave", 20, (20 * 20).toFixed(2), calcProfitLoss(20, 15)],
+                ["Water Heater", 35, (35 * 20).toFixed(2), calcProfitLoss(35, 35)],
+                ["Other Devices", 25, (25 * 20).toFixed(2), calcProfitLoss(25, 15)],
+                ["Total Cost", "-", (calculateTotalCost()).toFixed(2), "-"]
+            ];
+
+            let tableHTML = "<table>";
+            reportData.forEach((row, index) => {
+                let rowHTML = "<tr>";
+                row.forEach(cell => {
+                    rowHTML += index === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+                });
+                rowHTML += "</tr>";
+                tableHTML += rowHTML;
+            });
+            tableHTML += "</table>";
+
+            document.getElementById("report-content").innerHTML = tableHTML;
+            document.getElementById("report-buttons").classList.remove("hidden");
+        }
+
+        function calcProfitLoss(actual, minAllowed) {
+            if (actual <= minAllowed) {
+                return `+${(((minAllowed - actual) / minAllowed) * 100).toFixed(2)}% (Profit)`;
+            } else {
+                return `-${(((actual - minAllowed) / minAllowed) * 100).toFixed(2)}% (Loss)`;
+            }
+        }
+
+        function printReport() {
+            window.print();
+        }
+
+        function downloadReport() {
+            const reportText = document.getElementById("report-content").innerText;
+            const blob = new Blob([reportText], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Energy_Report.txt";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

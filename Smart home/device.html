@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Energy Usage</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+</head>
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
+    
+    <div class="sidebar">
+        <h2>Smart Home</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="applications.html">Applications</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="manage.html">Control</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h1 id="device-title"></h1>
+        <canvas id="deviceUsageChart"></canvas>
+        
+        <h3>Energy Saving Suggestions</h3>
+        <p id="suggestions"></p>
+        
+        <h3>Progress on Energy Usage</h3>
+        <p id="progress"></p>
+
+        <h3>Your Badges</h3>
+        <ul id="badges"></ul>
+    </div>
+
+    <div class="ai-assistant">
+        <button class="ai-btn" onclick="askAI()">🤖</button>
+        <div id="ai-response"></div>
+    </div>
+    
+    <script>
+        function askAI() {
+            document.getElementById('ai-response').innerText = "AI Assistant is thinking...";
+            setTimeout(() => {
+                document.getElementById('ai-response').innerText = "How can I assist you with energy management?";
+            }, 2000);
+        }
+
+        const device = localStorage.getItem("selectedDevice");
+        document.getElementById("device-title").innerText = `${device} Energy Usage`;
+
+        const usageData = {
+            lights: [2, 3, 4, 5, 3, 2, 4],
+            ac: [15, 18, 20, 22, 19, 16, 20],
+            refrigerator: [8, 9, 10, 10, 9, 8, 9],
+            others: [12, 14, 15, 16, 14, 12, 13]
+        };
+
+        const minUsage = {
+            lights: 2, ac: 15, refrigerator: 8, others: 12
+        };
+
+        const ctx = document.getElementById("deviceUsageChart").getContext("2d");
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                datasets: [
+                    {
+                        label: `${device} Usage (kWh)`,
+                        data: usageData[device],
+                        borderColor: "#2196F3",
+                        fill: false
+                    },
+                    {
+                        label: "Min Usage",
+                        data: new Array(7).fill(minUsage[device]),
+                        borderColor: "#FF9800",
+                        borderDash: [5, 5],
+                        fill: false
+                    }
+                ]
+            }
+        });
+
+        const suggestions = {
+            lights: "Use LED bulbs, turn off lights when not in use.",
+            ac: "Set AC to 24°C, clean filters regularly.",
+            refrigerator: "Keep fridge full but not overcrowded, set temperature correctly.",
+            others: "Unplug devices when not in use, use energy-efficient appliances."
+        };
+
+        document.getElementById("suggestions").innerText = suggestions[device];
+
+        function calculateProgress(currentData, pastData) {
+            const previousUsage = pastData.reduce((acc, value) => acc + value, 0);
+            const currentUsage = currentData.reduce((acc, value) => acc + value, 0);
+            const reductionPercentage = ((previousUsage - currentUsage) / previousUsage) * 100;
+            return reductionPercentage.toFixed(2);
+        }
+
+       const pastUsageData = {
+            lights: [3, 4, 5, 6, 4, 3, 5],
+            ac: [18, 20, 22, 23, 20, 19, 21],
+            refrigerator: [9, 10, 11, 12, 10, 9, 10],
+            others: [13, 15, 16, 17, 15, 14, 15]
+        };
+
+        const progress = calculateProgress(usageData[device], pastUsageData[device]);
+        document.getElementById("progress").innerText = `You have reduced energy usage by ${progress}% compared to last week.`;
+
+        function awardBadges(progress) {
+            const badges = [];
+            if (progress >= 5) {
+                badges.push({ name: "Hard worker", icon: "fas fa-hammer" });
+            }
+            if (progress >= 10) {
+                badges.push({ name: "Energy Saver", icon: "fas fa-bolt" });
+            }
+            if (progress >= 20) {
+                badges.push({ name: "Super Saver", icon: "fas fa-trophy" });
+            }
+            if (progress >= 30) {
+                badges.push({ name: "Efficiency Master", icon: "fas fa-medal" });
+            }
+            // Add more badge conditions as needed
+            return badges;
+        }
+
+        const badges = awardBadges(progress);
+        const badgesContainer = document.getElementById("badges");
+        badges.forEach(badge => {
+            const badgeElement = document.createElement("li");
+
+            const badgeContent = document.createElement("div");
+            badgeContent.classList.add("badge");
+            badgeContent.classList.add(badge.name.toLowerCase().replace(/\s+/g, '-'));
+
+            const iconElement = document.createElement("i");
+            iconElement.classList.add(...badge.icon.split(" ")); 
+            const badgeNameElement = document.createElement("span");
+            badgeNameElement.innerText = badge.name;
+
+            badgeContent.appendChild(iconElement);
+            badgeContent.appendChild(badgeNameElement);
+
+            badgeElement.appendChild(badgeContent);
+            badgesContainer.appendChild(badgeElement);
+        });
+    </script>
+</body>
+</html>

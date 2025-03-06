@@ -1,0 +1,450 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #0B2B45;
+    color: #fff;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 200px;
+    height: 100vh;
+    background: #1e5593;
+    position: fixed;
+    padding: 20px;
+    color: white;
+    border: 2px solid #ffffff;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 10px;
+}
+
+.sidebar ul li a {
+    color: #bbb;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar ul li:hover {
+    background: #1F3C5A;
+}
+
+/* Main Content */
+.container {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+/* Dashboard Title */
+.dashboard-title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.dashboard-title h1 {
+    margin-bottom: 5px;
+}
+
+.dashboard-title .filters {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.filters button {
+    background: none;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.filters button.active {
+    background: #007BFF;
+    border-radius: 5px;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: #1F3C5A;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.card canvas {
+    width: 80% !important;
+    height: 200px !important;
+    max-width: 200px;
+    max-height: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Card styling in dark mode */
+.dark-mode .card {
+    background-color: #000000; 
+    color: #fff; 
+    border-color: white;
+}
+/* Card border in dark mode */
+.dark-mode .card {
+    border: 1px solid white; 
+}
+
+
+/* SETTINGS PAGE STYLES */
+.settings-container {
+    flex-grow: 1;
+    padding: 20px 20px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 45px);
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    height: 70px; 
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.settings-header .back-button {
+    position: absolute;
+    left: 20px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #333;
+    padding: 10px;
+}
+
+.settings-title {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.settings-header .search-icon {
+    position: absolute;
+    right: 20px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #333;
+    padding: 10px;
+}
+#personalInfo {
+    text-align: center; 
+}
+
+.dark-mode {
+    background-color: #000000;
+    color: white;
+}
+
+.light-mode {
+    background-color: #0B2B45;;
+    color: white;
+}
+
+/* Make the labels bold */
+#personalInfo strong {
+    font-weight: bold;
+}
+
+/* Style for the separator line */
+.separator {
+    border-top: 1px solid #ccc; 
+    margin: 10px 0; 
+    width: 100%; 
+}
+
+/* Style for the Change Password button */
+.change-password-btn {
+    background-color: #f1f1f1; 
+    color: #333; 
+    border: 1px solid #ccc; 
+    padding: 5px 10px; 
+    margin-left: 10px; 
+    cursor: pointer; 
+    font-size: 14px; 
+    border-radius: 5px; 
+}
+
+/* Hover effect for the Change Password button */
+.change-password-btn:hover {
+    background-color: #0c04fe; 
+    border-color: #060606; 
+    color: #ffffff;
+}
+
+/* Updated Settings Options */
+.settings-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    height: 70px; 
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.settings-row:hover {
+    background: #e0e0e0;
+}
+
+/* Left section: Icon + Text */
+.settings-row .left {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    padding-left: 20px;
+    flex-grow: 1;
+}
+
+/* Increased space between icon and text */
+.settings-row .left i {
+    font-size: 24px;
+    margin-right: 20px; 
+}
+
+/* Right section: Arrow icon */
+.settings-row .right {
+    padding-right: 20px;
+}
+
+.settings-row .right i {
+    font-size: 22px;
+    color: #888;
+}
+
+
+/* Style for the Help & Support section */
+#helpSupport {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* FAQ Section */
+.faq ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.faq ul li {
+    margin: 10px 0;
+}
+
+.faq a {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.faq a:hover {
+    text-decoration: underline;
+}
+
+/* Contact Us Section */
+.contact-us p {
+    margin: 5px 0;
+}
+
+/* Support Button */
+.support-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.support-btn:hover {
+    background-color: #1976D2;
+}
+
+/* Documentation Section */
+.documentation ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.documentation ul li {
+    margin: 10px 0;
+}
+
+.documentation a {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.documentation a:hover {
+    text-decoration: underline;
+}
+/* Style for the separator line */
+.separator-line {
+    border-top: 2px solid #ccc; 
+    margin: 15px 0; 
+}
+
+/* Optional: Style for the links in the support section */
+#helpSupport ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#helpSupport ul li {
+    margin: 10px 0;
+}
+
+#helpSupport ul li a {
+    color: #2196F3; /* Link color */
+    text-decoration: none;
+}
+
+#helpSupport ul li a:hover {
+    text-decoration: underline; /* Hover effect for links */
+}
+
+/* Style for the Live Chat button */
+.live-chat-btn {
+    background-color: #4CAF50; 
+    color: white;  
+    padding: 10px 20px; 
+    border: none;  
+    border-radius: 5px;  
+    cursor: pointer;  
+    margin-top: 10px;  }
+
+.live-chat-btn:hover {
+    background-color: #45a049; 
+}
+
+#version {
+    text-align: center; 
+    justify-content: center; 
+    align-items: center; 
+    flex-direction: column; 
+    padding: 20px; 
+    background-color: #f0f0f0; 
+    border-radius: 8px; 
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* AI Assistant Button */
+.ai-assistant {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.ai-btn {
+    background: #2196F3;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.ai-btn:hover::after {
+    content: "Hi! How can I help you?";
+    position: absolute;
+    top: -35px;
+    left: -30%;
+    transform: translateX(-50%);
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: nowrap;
+}
